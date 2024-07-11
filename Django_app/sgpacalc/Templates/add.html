@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate SGPA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #3498db;
+            color: #2c3e50; /* Changed from white to a darker shade */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px; /* Increased max-width */
+            padding: 40px; /* Increased padding */
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        input[type="number"], input[type="text"], select {
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .calculate-btn {
+            background-color: rgb(207, 112, 216);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .calculate-btn:hover {
+            background-color: #27ae60;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+            color: darkblue;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .sgpa-result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+    </style>
+    <script>
+        function generateTable() {
+            // Get the number of subjects
+            const numSubjects = document.getElementById('numSubjects').value;
+            const tableBody = document.getElementById('subjectTableBody');
+            
+            // Clear any existing rows
+            tableBody.innerHTML = '';
+            
+            // Generate rows based on the number of subjects
+            for (let i = 1; i <= numSubjects; i++) {
+                const row = document.createElement('tr');
+
+                // Create subject cell
+                const subjectCell = document.createElement('td');
+                const subjectInput = document.createElement('input');
+                subjectInput.type = 'text';
+                subjectInput.name = `subject${i}`;
+                subjectInput.placeholder = `Subject ${i}`;
+                subjectCell.appendChild(subjectInput);
+
+                // Create marks cell
+                const marksCell = document.createElement('td');
+                const marksInput = document.createElement('input');
+                marksInput.type = 'number';
+                marksInput.name = `marks${i}`;
+                marksInput.placeholder = `Marks ${i}`;
+                marksInput.required = true;
+                marksCell.appendChild(marksInput);
+
+                // Create credits cell
+                const creditsCell = document.createElement('td');
+                const creditsInput = document.createElement('input');
+                creditsInput.type = 'number';
+                creditsInput.name = `credits${i}`;
+                creditsInput.placeholder = `Credits ${i}`;
+                creditsInput.required = true;
+                creditsCell.appendChild(creditsInput);
+
+                // Append cells to row
+                row.appendChild(subjectCell);
+                row.appendChild(marksCell);
+                row.appendChild(creditsCell);
+
+                // Append row to table body
+                tableBody.appendChild(row);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculate SGPA</h1>
+        <form method="post">
+            {% csrf_token %}
+            <label for="numSubjects">Enter number of subjects:</label>
+            <input type="number" id="numSubjects" name="numSubjects" required>
+            <button type="button" onclick="generateTable()" class="calculate-btn">Generate</button>
+            <br><br>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Marks</th>
+                        <th>Credits</th>
+                    </tr>
+                </thead>
+                <tbody id="subjectTableBody">
+                    <!-- Dynamic rows will be added here -->
+                </tbody>
+            </table>
+            <br>
+            <input type="submit" class="calculate-btn" value="Calculate SGPA">
+        </form>
+        {% if sgpa %}
+        <h2>Your SGPA is: {{ sgpa }}</h2>
+        {% endif %}
+    </div>
+</body>
+</html>
